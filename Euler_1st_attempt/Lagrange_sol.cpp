@@ -6,7 +6,7 @@ int main()
     The Lagrange solutions correspond to elliptic periodic orbits that maintains a equilateral triangle disposition
     */
     
-    double r = 20;
+    double r = 30;
     double theta = 0;
     double const pi = 3.1415;
     
@@ -21,22 +21,23 @@ int main()
 
     // System parameters
     
-    vector <double> M = {1,1,1};
-    vector <double> R = {1,1,1};
+    vector <double> M = {10,1,1};  // Masses
+    vector <double> R = {10,1,1};  // Radii
     
     // Initial conditions as {x,y,vx,vy}
     
-    vector <double> IC1 = {x1,y1,-0.2,0.1};
-    vector <double> IC2 = {x2,y2,0,-0.2};
-    vector <double> IC3 = {x3,y3,0.15,0.15};
+    vector <double> IC1 = {x1,y1,0,0};
+    vector <double> IC2 = {x2,y2,-0.2,-0.2};
+    vector <double> IC3 = {x3,y3,0.2,-0.2};
     
+
     vector <double> IC(IC1);
     IC.insert(IC.end(),IC2.begin(),IC2.end());
     IC.insert(IC.end(),IC3.begin(),IC3.end());
     
     // Instance the Three_body object
     
-    Three_body TB(0,1); 
+    Three_body TB(0,1); // Initial_time , Value of G
     
     TB.set_Masses(M);
     TB.set_Radii(R);
@@ -44,7 +45,7 @@ int main()
     
     ofstream file ("prueba1.txt"); // File for storing solutions
     
-    TB.evol_system(150,0.1,&file);
+    TB.evol_system(10000,0.1,&file); // Numer of steps, step size
     
     return 0;
 }

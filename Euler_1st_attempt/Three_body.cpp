@@ -154,7 +154,7 @@ void Three_body::write_on_file(ofstream *file)
 
 }
 
-void Three_body::evol_system(double total_time, double time_step, ofstream *file)
+void Three_body::evol_system(double number_of_steps, double time_step, ofstream *file)
 {
     // Writing file header
     if (file -> is_open())
@@ -162,7 +162,8 @@ void Three_body::evol_system(double total_time, double time_step, ofstream *file
 	  *file << Masses[0] << "," << Masses[1] << "," << Masses[2] << "," << Radii[0] << "," << Radii[1] << "," << Radii[2] << "," << 0 << "\n";
     }
     
-    for(double i = 0 ; i <= total_time ; i += time_step)
+    
+    for(double i = 0 ; i <= number_of_steps ; i ++)
     {
         write_on_file(file);
         euler_integrator(time_step);
@@ -176,7 +177,11 @@ bool Three_body::check_radii()
     bool sp12 = Radii[0] + Radii[1] > S3;  // R1 + R2 > S3
     bool sp13 = Radii[0] + Radii[2] > S2;  // R1 + R3 > S2
     bool sp23 = Radii[1] + Radii[2] > S1;  // R2 + R3 > S1
-        
+    
+    if (sp12 || sp13 || sp23)
+    {
+        cout << "There was a colliton" << endl;
+    }
     return sp12 || sp13 || sp23;
 }
 
