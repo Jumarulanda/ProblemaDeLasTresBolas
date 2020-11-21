@@ -49,18 +49,15 @@ void print_vector(const vector<double>, double);
 
 /* Integration method */
 
-vector<double> leap :: leap_step(double (*F)(double), double x_n, double v_nHalf, double h, bool is_start = false){
+/* Verlet algorithm for 1 degree of freedom */
+
+vector<double> leap :: leap_step(double (*F)(double), double x_n, double v_n, double h){
 	/* Leapfrog integration step.
 	 * 
 	 * Inputs:
 	 * 		- F(x): differential equation function for the velocity
 	 * 		- x_n: position initial condition of present step 
-	 * 		- v_nHalf: velocity half-step. If is_start = true, this is the initial condition 
-	 * 		           velocity v_0
-	 * 		- is_start: true if this is the first ever step computed, if this is the case
-	 * 		            then v_nHalf is calculated from v_0, which replaces the input v_nHalf.
-	 * 		            Otherwise, this entry is false
-	 * 		            
+	 * 		- v_n: velocity at present step.
 	 *
 	 * Outputs:
 	 * 		- A double vector containing the next full step for x and v, and the next half
@@ -70,102 +67,92 @@ vector<double> leap :: leap_step(double (*F)(double), double x_n, double v_nHalf
 	 *
 	 * */
 
-	if (is_start){
-		v_nHalf = v_nHalf + h*0.5*F(x_n);
-	}	
-
+	double v_nHalf = v_n + h*F(x_n)*0.5;	
 	double x_np1 = x_n + h*v_nHalf;
-	double v_npHalf = v_nHalf + h*F(x_np1);
 	double v_np1 = v_nHalf + h*0.5*F(x_np1);
 
-	vector<double> n_state = {x_np1, v_np1, v_npHalf};
+	vector<double> n_state = {x_np1, v_np1};
 
 	return n_state;
-}
-
-void leap :: leap_rangeInt(double (*F)(double), double x_0, double v_0, double h, double t_f){
-	/* Leapfrog integration over a range of time.
-	 *
-	 * Inputs:
-	 * 		- F(x): differential equation function for the velocity
-	 * 		- x_0: position initial condition
-	 * 		- v_0: velocity initial condition
-	 * 		- h: integration time-step
-	 * 		- t_f: final integration range
-	 *
-	 * note: t_f should be an integral multiple of h, otherwise, final integration time wont
-	 * be reached.
-	 *
-	 * */
-
-	/* Initial condition vector. v_0 is repeated because v_1/2 has not been computed yet*/
-	vector<double> sols = {x_0, v_0, v_0};
-	print_vector(sols, 0.);
-
-	/* Compute first leapfrog step. Last argument is true because v_1/2 must be computed*/ 
-	sols = leap :: leap_step(*F, sols[0], sols[2], h, true);
-	print_vector(sols, h);
-
-	/* Compute the steps that follow until the final computation time is reached */
-	for (double t = 2.*h; t <= t_f; t += h){
-		sols = leap :: leap_step(F, sols[0], sols[2], h, false);
-		print_vector(sols, t);
-	}	
-}
-
-void print_vector(const vector<double> pvec, double t){
-	/* Function to print each integration-step state in terminal. This funciton is
-	 * only used by functions from the namespace and cannot be used outside this
-	 * script
-	 *
-	 * */
-	
-	std::cout << t << ", ";
-
-	int v_size = pvec.size() - 1;
-
-	for (int i = 0; i < v_size - 1; i++) {
-		std::cout << pvec[i] << ",";
-	}
-
-	std::cout << pvec[v_size-1] << std::endl;
 }
 
 
 /* Verlet algorithm for n degrees of freedom */
 
-vector<double> leap :: leap_step(double (*F)(double<vector>), vector<double> x_n, double<vector> v_nHalf, double h, bool is_start = false){
-	/* Leapfrog integration step.
-	 * 
+vector<double> leap :: upd_x_n(vector<double> x_n, vector<double> v_nHalf, double h) {
+	/* Function that updates the n generalized positions. */
+	
+	/* Inputs: */
+	/* 	- x_n: vector of generalzied positions at time t_n */
+	/* 	- v_nHalf: vector of generalized velocities at time t_n+1/2 */
+	/* 	- h: integration time step */ 
+
+	int deg_of_freedom = x_n.size();
+	vector<double> x_np1;
+
+	for (int i = 0; i < deg_of_freedom; i++){
+		x_np1.push_back(x_n[i] + h*v_nHalf[i]);
+	}
+
+	return x_np1;
+}
+
+vector<double> leap :: upd_v_nHalf(vector<double> (*F)(vector<double>), vector<double> x_n, vector<double> v_n, double h) {
+	/* Function that updates the n generalized half velocities. */
+	
+	/* Inputs: */
+	/* 	- F(x): ODE system */
+	/* 	- x_n: vector of generalzied positions at time t_n */
+	/* 	- v_nHalf: vector of generalized velocities at time t_n+1/2 
+	 * 	- v_n: vetor of generalized velocites at time t_n */
+	/* 	- h: integration time step */ 
+
+	int deg_of_freedom = x_n.size();
+	vector<double> v_nHalf;
+
+	for (int i = 0; i < deg_of_freedom; i++){
+		v_nHalf.push_back(v_n[i] + h*F(x_n)[i]*0.5);
+	}
+
+	return v_nHalf;
+}
+
+vector<double> leap :: upd_v_n(vector<double> (*F)(vector<double>), vector<double> x_np1, vector<double> v_nHalf, double h) {
+	/* Function that updates the n generalized half velocities. */
+	
+	/* Inputs: */
+	/* 	- F(x): ODE system */
+	/* 	- x_np1: vector of generalzied positions at time t_n+1 */
+	/* 	- v_nHalf: vector of generalized velocities at time t_n+1/2 
+	 * 	- v_n: vetor of generalized velocites at time t_n */
+	/* 	- h: integration time step */ 
+
+	int deg_of_freedom = x_np1.size();
+	vector<double> v_np1;
+
+	for (int i = 0; i < deg_of_freedom; i++){
+		v_np1.push_back(v_nHalf[i] + h*F(x_np1)[i]*0.5);
+	}
+
+	return v_np1;
+}
+
+vector<vector<double>> leap :: leap_step_n(vector<double> (*F) (vector<double>), vector<double> x_n, vector<double> v_n, double h) {
+	/* Function to integrate a step on all the degrees of freedom of the system
 	 * Inputs:
-	 * 		- F(x): differential equation function for the velocity
-	 * 		- x_n: position initial condition of present step 
-	 * 		- v_nHalf: velocity half-step. If is_start = true, this is the initial condition 
-	 * 		           velocity v_0
-	 * 		- is_start: true if this is the first ever step computed, if this is the case
-	 * 		            then v_nHalf is calculated from v_0, which replaces the input v_nHalf.
-	 * 		            Otherwise, this entry is false
-	 * 		            
-	 *
-	 * Outputs:
-	 * 		- A double vector containing the next full step for x and v, and the next half
-	 * 		  step for v, like this
-	 *
-	 * 		  {x_n+1, v_n+1, v_n+1/2}
+	 * 		- F(x): ODE system
+	 * 		- x_n: vector of generalized positions at t_n
+	 * 		- v_nHalf: vector of generalized velocities at t_n+1/2
+	 * 		- v_n; vector of generalized velocities at t_n
+	 * 		- h: integratoin time step
 	 *
 	 * */
 
-	if (is_start){
-		v_nHalf = v_nHalf + h*0.5*F(x_n);
-	}	
+	vector<double> v_nHalf = upd_v_nHalf(F, x_n, v_n, h);
+	vector<double> x_np1 = upd_x_n(x_n, v_nHalf, h);
+	vector<double> v_np1 = upd_v_n(F, x_np1, v_nHalf, h);
 
-	double x_np1 = x_in + h*v_nHalf;
-	double v_npHalf = v_inHalf + h*F(x_np1);
-	double v_np1 = v_inHalf + h*0.5*F(x_np1);
+	vector<vector<double>> sol_tnp1 = {x_np1, v_np1};
 
-	vector<double> n_state = {x_np1, v_np1, v_npHalf};
-
-	return n_state;
-}
-
-vector<double> update_vector(double (*F)(double<vector>), vector<double> x_n, double<vector> v_nHalf, double h)
+	return sol_tnp1;
+}	

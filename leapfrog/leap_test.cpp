@@ -16,14 +16,14 @@ int main(){
 	double th_0 = 1., omeg_0 = 0.;
 	double h = 2./os_frq/25.;
 
-	/* vector<double> sols = leap :: leap_step(*omeg_p, th_0, omeg_0, h, true); */
+	vector<double> sols = leap :: leap_step(*omeg_p, th_0, omeg_0, h);
 
-	/* for (int i=0; i < 10000; i++) { */
-	/* 	sols = leap :: leap_step(*omeg_p, sols[0], sols[2], h, false); */
-	/* 	print_vector(sols); */
-	/* } */
+	for (int i=0; i < 100; i++) {
+		sols = leap :: leap_step(*omeg_p, sols[0], sols[1], h);
+		print_vector(sols);
+	}
 
-	leap :: leap_rangeInt(*omeg_p, th_0, omeg_0, h, 50.*h);
+	/* leap :: leap_rangeInt(*omeg_p, th_0, omeg_0, h, 50.*h); */
 
 	return 0;
 }
