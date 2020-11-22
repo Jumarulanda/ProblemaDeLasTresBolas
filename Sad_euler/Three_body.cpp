@@ -124,7 +124,7 @@ vector<double> Three_body::f(vector<double> Q)
 // Integrators
 
                                                 
-void Three_body::evol_system(double number_of_steps, double time_step, ofstream *file)
+void Three_body::evol_system(double number_of_steps, double time_step, ofstream *file, char opt)
 {
     // Writing file header
     if (file -> is_open())
@@ -140,9 +140,17 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
         
         vector<vector<double>> State {q,p};
         vector <vector<double>> Updated_State; 
-    
-        Updated_State = euler_integrator(time_step, State);
-            
+   
+	   	switch (opt) {	
+      		case 'v': 
+				Updated_State = vel_verlet(time_step, State);
+				break;
+			case 'e':
+				Updated_State = euler_integrator(time_step, State);
+				break;
+			default:
+				Updated_State = euler_integrator(time_step, State);
+        }  
         // Updating generalized coordinate member variables
         
         q = Updated_State[0];
@@ -173,7 +181,30 @@ vector<vector<double>> Three_body::euler_integrator(double time_step, vector<vec
     
     return {updated_Q , updated_P};
 }
+
+
+vector<vector<double>> Three_body::vel_verlet(double time_step, vector<vector<double>> State) {
+    double h = time_step;
     
+    vector<double> Q = State[0];
+    vector<double> P = State[1];
+    
+    vector<double> updated_Q {};
+    vector<double> updated_P {};
+    
+	vector<double> P_nHalf;
+
+    for (int i = 0; i < Q.size(); i++) {
+		P_nHalf.push_back(P[i] + h*f(q)[i]*0.5);
+		updated_Q.push_back(Q[i] + h*P_nHalf[i]/m[int(i/2. + 1)]);
+    }
+
+	for (int i=0; i < Q.size(); i++) {
+		updated_P.push_back(P_nHalf[i] + h*0.5*f(Q)[i]);
+	}
+    
+    return {updated_Q , updated_P};
+}   
                                                     
 //~~~~~~~~~~~ Tools ~~~~~~~~~~//
     

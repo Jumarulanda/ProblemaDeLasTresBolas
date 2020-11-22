@@ -4,6 +4,7 @@ import argparse as arp
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from matplotlib.animation import FuncAnimation
+import matplotlib
 
 ## Parser
 
@@ -37,6 +38,8 @@ plt.plot(X3,Y3)
 plt.show()
 
 if input("Desea guardar la animacion? (y/n): ") == "y":
+
+    matplotlib.use("Agg")
 
     ## Setting the limits of the graph
 
@@ -117,15 +120,15 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
 
     ani = FuncAnimation( fig, animate, init_func = init, frames = len(X1) , interval = 1, blit = True, repeat = False)
 
-    Writer = animation.writers['ffmpeg']
+    # Writer = animation.writers['ffmpeg']
     
     ## Change fps if want a more speeded animation
-    writer = Writer(fps=90, metadata=dict(artist='Me'), bitrate=1800)
-    ani.save('ani.mp4',writer = writer)
+    # writer = Writer(fps=90, metadata=dict(artist='Me'), bitrate=1800)
+    # ani.save('ani.mp4',writer = writer)
+    ani.save('ani.gif', writer='imagemagick', fps=30)
 
 else: 
     pass
-
 
 
 

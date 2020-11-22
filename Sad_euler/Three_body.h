@@ -17,7 +17,7 @@ public:
     void set_Radii(vector<double>);
     void set_Initial_Conditions(vector<double>);
     
-    void evol_system(double, double, ofstream (*));
+    void evol_system(double, double, ofstream (*),char);
 
 private:
 
@@ -47,6 +47,7 @@ private:
     // Tools
     
     vector <vector<double>> euler_integrator( double, vector<vector<double>>);                    // Integrator: NEEDS REVISION
+	vector<vector<double>> vel_verlet(double, vector<vector<double>>);
     
     bool check_radii(vector <double>);  // Checking if no collisions have happened
     void write_on_file(ofstream (*));   // Writing in file: {x1,y1,x2,y2,x3,y3,t} 
