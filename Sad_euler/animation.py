@@ -4,6 +4,7 @@ import argparse as arp
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from matplotlib.animation import FuncAnimation
+import matplotlib
 
 ## Parser
 
@@ -33,6 +34,8 @@ plt.show()
 
 if input("Desea guardar la animacion? (y/n): ") == "y":
 
+    matplotlib.use("Agg")
+    
     ## Setting the limits of the graph
 
     xmax = max( np.concatenate([X1,X2,X3]) ) + max(R1,R2,R3)

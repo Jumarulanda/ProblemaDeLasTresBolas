@@ -1,6 +1,6 @@
 #include "eu_int.h"
 
-vector<vector<double>> eu_int :: eu_int_step(vector<double> (*F)(vector<double>), double time_step, vector<vector<double>> State) {
+vector<vector<double>> eu_int :: eu_int_step(auto (*F)(vector<double>), double time_step, vector<vector<double>> State) {
 	double h = time_step;
     
     vector<double> Q = State[0];

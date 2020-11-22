@@ -56,5 +56,5 @@ public:
 	/* Friend functions */
 
 	friend vector<vector<double>> eu_int :: eu_int_step(vector<double> (*) (vector<double>), double, vector<vector<double>>);
+
 };
-    

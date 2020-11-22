@@ -207,8 +207,3 @@ bool Three_body::check_radii(vector <double> Q)
 }
 
 
-
-
-
-
-
