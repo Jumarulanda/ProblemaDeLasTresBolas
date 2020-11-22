@@ -4,6 +4,8 @@
 #include <fstream>
 #include <functional>
 
+#include "eu_int.h"
+
 using namespace std::placeholders;
 using namespace std;
 
@@ -51,5 +53,8 @@ public:
     bool check_radii(vector <double>);  // Checking if no collisions have happened
     void write_on_file(ofstream (*));   // Writing in file: {x1,y1,x2,y2,x3,y3,t} 
     
+	/* Friend functions */
+
+	friend vector<vector<double>> eu_int :: eu_int_step(vector<double> (*) (vector<double>), double, vector<vector<double>>);
 };
     
