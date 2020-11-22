@@ -6,7 +6,7 @@ int main()
     The Lagrange solutions correspond to elliptic periodic orbits that maintains a equilateral triangle disposition
     */
     
-    double r = 30;
+    double r = 40;
     double theta = 0;
     double const pi = 3.1415;
     
@@ -21,8 +21,8 @@ int main()
 
     // System parameters
     
-    vector <double> M = {10,1,1};  // Masses
-    vector <double> R = {10,1,1};  // Radii
+    vector <double> M = {5,3,4};  // Masses
+    vector <double> R = {0.9,0.2,0.5};  // Radii
     
     // Initial conditions as {x,y,vx,vy}
     

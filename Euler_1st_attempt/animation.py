@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 from matplotlib.animation import FuncAnimation
 
+import matplotlib
+
+plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
+
 ## Parser
 
 parser = arp.ArgumentParser()
@@ -33,6 +37,7 @@ plt.show()
 
 if input("Desea guardar la animacion? (y/n): ") == "y":
 
+    matplotlib.use("Agg")
     ## Setting the limits of the graph
 
     xmax = max( np.concatenate([X1,X2,X3]) ) + max(R1,R2,R3)
@@ -103,12 +108,11 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
     
     fig.canvas.draw()
 
-
     ani = FuncAnimation( fig, animate, init_func = init, frames = len(X1) , interval = 1, blit = True, repeat = False)
-
-    Writer = animation.writers['ffmpeg']
     
-    ## Change fps if want a more speeded animation
+    Writer = animation.writers['ffmpeg']
+
+    # ## Change fps if want a more speeded animation
     writer = Writer(fps=90, metadata=dict(artist='Me'), bitrate=1800)
     ani.save('ani.mp4',writer = writer)
 
