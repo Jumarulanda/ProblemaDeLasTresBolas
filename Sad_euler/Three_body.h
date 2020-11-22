@@ -19,7 +19,7 @@ public:
     
     void evol_system(double, double, ofstream (*));
 
-//private:
+private:
 
     // Instance parameters
     
@@ -28,20 +28,20 @@ public:
     
     // System parameters
 
-    vector<double> Masses;  // {M,m1,m2,m3}
-    vector<double> Radii;   // {R1,R2,R3}
-    vector<double> CM;      // {x_CM , y_CM}
+    vector<double> M;   // {M_t,M1,M2,M3}
+    vector<double> m;   // Relative masses
+    vector<double> R;   // {R1,R2,R3}
+    vector<double> CM;  // {x_CM , y_CM}
     
     // Generalized coordinate system
     
-    vector <double> q; // {sx1,sy1,sx2,sy2,sx3,sy3} : Relative positions
-    vector <double> p; // {ux1,uy1,ux2,uy2,ux3,uy3} : Relative velocities
+    vector <double> q; // {qx1,qy1,qx2,qy2,qx3,qy3} : Relative positions
+    vector <double> p; // {px1,py1,px2,py2,px3,py3} : Relative momenta
     
     // State functions
     
-    vector <double> r( vector <double>); // Distances between the bodies
-    vector <double> g( vector <double>); // g forace vector
-        
+    vector<double> r( vector <double>); // Distances between the bodies
+    vector<double> g( vector <double>); // g forace vector
     vector<double> f( vector <double>); // Forces upon q   
     
     // Tools
