@@ -15,11 +15,11 @@ int main()
     double x1 = r*cos(theta);
     double y1 = r*sin(theta);
     
-    double x2 = r*cos(theta + 2*pi/3.);
-    double y2 = r*sin(theta + 2*pi/3.);
+    double x2 = r*cos(theta + 2*PI/3.);
+    double y2 = r*sin(theta + 2*PI/3.);
     
-    double x3 = r*cos(theta + 4*pi/3.);
-    double y3 = r*sin(theta + 4*pi/3.);
+    double x3 = r*cos(theta + 4*PI/3.);
+    double y3 = r*sin(theta + 4*PI/3.);
 
     // System parameters
     
