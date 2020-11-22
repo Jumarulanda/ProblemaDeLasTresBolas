@@ -58,8 +58,8 @@ void Three_body::set_Initial_Conditions(vector<double> IC)
     vector <double> q3 {}; // q3 = r1 - r2
     
     vector <double> p1 {}; // p1 = m1/M2 k2 - m1/M3 k3
-    vector <double> p2 {}; // p1 = m1/M2 k2 - m1/M3 k3
-    vector <double> p3 {}; // p1 = m1/M2 k2 - m1/M3 k3
+    vector <double> p2 {}; // p2 = m2/M3 k3 - m2/M1 k1
+    vector <double> p3 {}; // p3 = m3/M1 k1 - m3/M2 k2
     
     
     for (int i = 0; i < 2 ; i++)
@@ -124,7 +124,6 @@ vector<double> Three_body::f(vector<double> Q)
 // Integrators
 
                                                 
-
 void Three_body::evol_system(double number_of_steps, double time_step, ofstream *file)
 {
     // Writing file header
@@ -155,6 +154,7 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
     }
 }
 
+
 vector<vector<double>> Three_body::euler_integrator(double time_step, vector<vector<double>> State)
 {
     double h = time_step;
@@ -168,7 +168,7 @@ vector<vector<double>> Three_body::euler_integrator(double time_step, vector<vec
     for (int i = 0; i < Q.size(); i++)
     {
         updated_Q.push_back( Q[i] + h*(P[i]/m[int(i/2. + 1)]));
-        updated_P.push_back( P[i] + h*f(q)[i] );  // Aquí f debería ser una funcion por referencia y no esa f es una función miembro de la clase.
+        updated_P.push_back( P[i] + h*f(q)[i] );  
     }
     
     return {updated_Q , updated_P};
@@ -232,7 +232,7 @@ bool Three_body::check_radii(vector <double> Q)
     
     if (sp12 || sp13 || sp23)
     {
-        cout << "There was a collition" << endl;
+        cout << "There was a collision" << endl;
     }
     return sp12 || sp13 || sp23;
 }
