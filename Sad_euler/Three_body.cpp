@@ -57,9 +57,9 @@ void Three_body::set_Initial_Conditions(vector<double> IC)
     vector <double> q2 {}; // q2 = r3 - r1
     vector <double> q3 {}; // q3 = r1 - r2
     
-    vector <double> p1 {}; // p1 = m1/M2 k2 * m1/M3 k3
-    vector <double> p2 {}; // p1 = m1/M2 k2 * m1/M3 k3
-    vector <double> p3 {}; // p1 = m1/M2 k2 * m1/M3 k3
+    vector <double> p1 {}; // p1 = m1/M2 k2 - m1/M3 k3
+    vector <double> p2 {}; // p1 = m1/M2 k2 - m1/M3 k3
+    vector <double> p3 {}; // p1 = m1/M2 k2 - m1/M3 k3
     
     
     for (int i = 0; i < 2 ; i++)
