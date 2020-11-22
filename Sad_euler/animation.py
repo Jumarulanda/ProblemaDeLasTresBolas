@@ -21,14 +21,19 @@ X1 = read_data[1:,0] ; Y1 = read_data[1:,1]
 X2 = read_data[1:,2] ; Y2 = read_data[1:,3]
 X3 = read_data[1:,4] ; Y3 = read_data[1:,5]
 
-t = read_data[:,6]
+KX1 = read_data[1:,6] ; KY1 = read_data[1:,7]
+KX2 = read_data[1:,8] ; KY2 = read_data[1:,9]
+KX3 = read_data[1:,10] ; KY3 = read_data[1:,11]
+
+t = read_data[:,12]
 
 #plt.scatter( [ X1[0],X2[0],X3[0] ] , [Y1[0],Y2[0],Y3[0]] , color = "k")
+
+# Preview plot
 
 plt.plot(X1,Y1)
 plt.plot(X2,Y2)
 plt.plot(X3,Y3)
-
 plt.show()
 
 if input("Desea guardar la animacion? (y/n): ") == "y":
@@ -68,7 +73,9 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
         ax1.set_xlim([cm + mid_point, cM + mid_point] )
         ax1.set_ylim([cm, cM] )
     
-
+    ax1.get_xaxis().set_ticks([])
+    ax1.get_yaxis().set_ticks([])
+    
     M = ax1.transData.get_matrix()
 
     # Animating
