@@ -6,8 +6,8 @@ int main()
     The Lagrange solutions correspond to elliptic periodic orbits that maintains a equilateral triangle disposition
     */
         
-   	double PI = 3.14159265359;
-	double G = 39.43279791722677;
+    double PI = 3.14159265359;
+    double G = 39.43279791722677;
     
     double r = 30;
     double theta = 0;
