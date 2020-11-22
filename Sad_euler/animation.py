@@ -87,12 +87,14 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
     pts1, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R1, color= "k")
     pts2, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R2, color= "k")
     pts3, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R3, color= "k")
-
+    
+    info = ax1.text(0.02,0.92," ",transform = ax1.transAxes,fontsize = 10)
+    
     def init():
     
         for l in [line1,line2,line3,pts1,pts2,pts3]:
             l.set_data([],[])
-        
+            
         return line1,line2,line3,pts1,pts2,pts3
 
     def animate(i):
@@ -105,8 +107,10 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
     
         line3.set_data(X3[:i],Y3[:i])
         pts3.set_data(X3[i], Y3[i])
+        
+        info.set_text("Years: {}".format(t[i]))
     
-        return line1,line2,line3,pts1,pts2,pts3
+        return line1,line2,line3,pts1,pts2,pts3,info
     
     fig.canvas.draw()
 
