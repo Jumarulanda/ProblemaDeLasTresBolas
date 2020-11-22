@@ -5,10 +5,12 @@ int main()
     /*
     The Lagrange solutions correspond to elliptic periodic orbits that maintains a equilateral triangle disposition
     */
+        
+   	double PI = 3.14159265359;
+	double G = 39.43279791722677;
     
     double r = 30;
     double theta = 0;
-    double const pi = 3.1415;
     
     double x1 = r*cos(theta);
     double y1 = r*sin(theta);
@@ -24,7 +26,7 @@ int main()
     vector <double> M = {10,1,1};  // Masses
     vector <double> R = {10,1,1};  // Radii
     
-    // Initial conditions as {x,y,vx,vy}
+    // Initial conditions as {x,y,kx,ky}
     
     vector <double> IC1 = {x1,y1,-0.1,0.1};
     vector <double> IC2 = {x2,y2,0.3,-0.3};
