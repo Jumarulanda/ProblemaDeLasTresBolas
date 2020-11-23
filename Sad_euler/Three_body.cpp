@@ -138,10 +138,13 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
         // Writes on file the current state of system
         write_on_file(file); 
         
+	// Set state
         vector<vector<double>> State {q,p};
         vector <vector<double>> Updated_State; 
-   
-	   	switch (opt) {	
+   	
+	// Integrator election 
+	switch (opt)
+	{	
       		case 'v': 
 		  Updated_State = vel_verlet(time_step, State);
 		  break;
@@ -152,7 +155,8 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
 		   Updated_State = RK4(time_step, State);
 		default:
 		  Updated_State = euler_integrator(time_step, State);
-        }  
+        } 
+	    
         // Updating generalized coordinate member variables
         
         q = Updated_State[0];
