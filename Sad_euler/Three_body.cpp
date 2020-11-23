@@ -129,7 +129,7 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
     // Writing file header
     if (file -> is_open())
     {
-	  *file << M[0] << "," << M[1] << "," << M[2] << "," << R[1] << "," << R[2] << "," << R[3] << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "\n";
+	  *file << M[1] << "," << M[2] << "," << M[3] << "," << R[1] << "," << R[2] << "," << R[3] << "," << CM[0] << "," << CM[1] << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "\n";
     }
     
 
@@ -138,22 +138,26 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
         // Writes on file the current state of system
         write_on_file(file); 
         
-	// Set state
+	    // Set state
         vector<vector<double>> State {q,p};
         vector <vector<double>> Updated_State; 
    	
-	// Integrator election 
-	switch (opt)
-	{	
-      		case 'v': 
+	    // Integrator election 
+	    switch (opt)
+	    {	
+        case 'v': 
 		  Updated_State = vel_verlet(time_step, State);
 		  break;
-		case 'e':
+               
+        case 'e':
 		  Updated_State = euler_integrator(time_step, State);
 		  break;
-		case 'r':
+               
+        case 'r':
 		   Updated_State = RK4(time_step, State);
-		default:
+           break;
+               
+        default:
 		  Updated_State = euler_integrator(time_step, State);
         } 
 	    
