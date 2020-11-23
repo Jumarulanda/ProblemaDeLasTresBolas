@@ -14,7 +14,11 @@ public:
     // System setting
     void set_Masses(vector<double>);
     void set_Radii(vector<double>);
-    void set_Initial_Conditions(vector<double>);
+    
+    void set_Initial_R(vector<double>);
+    void set_Initial_K(vector<double>);
+    
+    vector<double> get_forces();
     
     // System evolution
     void evol_system(double, double, ofstream (*),char);
