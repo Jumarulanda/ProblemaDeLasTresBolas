@@ -24,12 +24,12 @@ int main()
     // System parameters
     
     vector <double> M = {1,1,1};  // Masses
-    vector <double> R = {0.1,0.1,0.1};  // Radii
+    vector <double> R = {1,1,1};  // Radii
     
     // Initial conditions 
     
     vector <double> IR = {-10,0,0,0,10,0};
-    vector <double> IK = {0,1,0,-1,0,1}; 
+    vector <double> IK = {0,1,2,3,4,5}; 
     
     // Instance the Three_body object
     

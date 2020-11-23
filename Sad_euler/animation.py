@@ -28,6 +28,11 @@ X1 = read_data[1:,0] ; Y1 = read_data[1:,1]
 X2 = read_data[1:,2] ; Y2 = read_data[1:,3]
 X3 = read_data[1:,4] ; Y3 = read_data[1:,5]
 
+
+S3 = np.sqrt( (X1-X2)**2 + (Y1-Y2)**2 )
+S2 = np.sqrt( (X1-X3)**2 + (Y1-Y3)**2 )
+S1 = np.sqrt( (X3-X2)**2 + (Y3-Y2)**2 )
+
 ## X,Y Momenta
 
 KX1 = read_data[1:,6] ; KY1 = read_data[1:,7]
@@ -36,21 +41,49 @@ KX3 = read_data[1:,10] ; KY3 = read_data[1:,11]
 
 # Time
 
-t = read_data[:,12]
+t = read_data[1:,12]
+
+# Energy plots
+
+K1 = 0.5/M1*KX1**2 + 0.5/M1*KY1**2
+K2 = 0.5/M2*KX2**2 + 0.5/M2*KY2**2
+K3 = 0.5/M3*KX3**2 + 0.5/M3*KY3**2
+
+G = 39.43279791722677
+U= -G* ( M1*M2/S3 + M1*M3/S2 + M2*M3/S1)
 
 # Preview plot
 
-plt.scatter([X1[0],X2[0],X3[0]],[Y1[0],Y2[0],Y3[0]], marker = "x", s = 10, color = ["#FF5733","#C44C33","#873828"], label = "Starting points")
+fig = plt.figure(figsize = [14,6])
+ax1 = fig.add_subplot(121)
+ax2 = fig.add_subplot(122)
 
-plt.plot(X1,Y1,"--", alpha = 0.6, lw = 1.2, color = "#FF5733", label = "$m_1 = {} \odot$".format(M1))
-plt.plot(X2,Y2,"--", alpha = 0.6, lw = 1.2, color = "#C44C33", label = "$m_2 = {} \odot$".format(M2))
-plt.plot(X3,Y3,"--", alpha = 0.6, lw = 1.2, color = "#873828", label = "$m_3 = {} \odot$".format(M3))
+ax1.scatter([X1[0],X2[0],X3[0]],[Y1[0],Y2[0],Y3[0]], marker = "x", s = 10, color = ["#FF5733","#C44C33","#873828"], label = "Starting points")
 
-plt.title("Animation preview", fontsize = 13)
-plt.xlabel("X [AU]", fontsize = 10)
-plt.ylabel("Y [AU]", fontsize = 10)
+ax1.plot(X1,Y1,"--", alpha = 0.6, lw = 1.2, color = "#FF5733", label = "$m_1 = {} \odot$".format(M1))
+ax1.plot(X2,Y2,"--", alpha = 0.6, lw = 1.2, color = "#C44C33", label = "$m_2 = {} \odot$".format(M2))
+ax1.plot(X3,Y3,"--", alpha = 0.6, lw = 1.2, color = "#873828", label = "$m_3 = {} \odot$".format(M3))
 
-plt.legend()
+ax1.set_title("Animation preview", fontsize = 13)
+ax1.set_xlabel("X [AU]", fontsize = 10)
+ax1.set_ylabel("Y [AU]", fontsize = 10)
+
+ax1.legend()
+
+
+ax2.plot(t,K1, color = "k", label = "Kinetic energy")
+ax2.plot(t,K2, color = "k")
+ax2.plot(t,K3, color = "k")
+ax2.plot(t, U, label = "Potential energy")
+ax2.plot(t,K1+K2+K3+U, color = "r", label = "Total energy")
+
+ax2.set_xlabel("Time")
+ax2.set_ylabel("Energy")
+
+ax2.set_title("Energy plots")
+
+ax2.legend()
+
 plt.show()
 
 if input("Desea guardar la animacion? (y/n): ") == "y":
