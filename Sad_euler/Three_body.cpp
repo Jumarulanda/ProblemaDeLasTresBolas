@@ -33,16 +33,16 @@ void Three_body::set_Radii(vector<double> Radii)
     R.insert(R.end(),Radii.begin(),Radii.end());
 }
 
-void Three_body::set_Initial_Conditions(vector<double> IC)
+void Three_body::set_Initial_R(vector<double> IR)
 {
     /*
     The input is a 12-vecttor object with the initial positions and velocities of the system.
-    Instance must be as follows: {x1,y1,kx1,ky1,x2,y2,kx2,ky2,x3,y3,kx3,ky3}
+    Instance must be as follows: {x1,y1,x2,y2,x3,y3}
     */
     
-    vector<double> V1(&IC[0],&IC[4]);   // {x1,y1,kx1,ky1}
-    vector<double> V2(&IC[4],&IC[8]);   // {x2,y2,kx2,ky2}
-    vector<double> V3(&IC[8],&IC[12]);  // {x3,y3,kx3,ky3}
+    vector<double> V1(&IR[0],&IR[2]);   // {x1,y1}
+    vector<double> V2(&IR[2],&IR[4]);   // {x2,y2}
+    vector<double> V3(&IR[4],&IR[6]);   // {x3,y3}
     
     // Determing center of mass coordinates
     
@@ -57,28 +57,56 @@ void Three_body::set_Initial_Conditions(vector<double> IC)
     vector <double> q2 {}; // q2 = r3 - r1
     vector <double> q3 {}; // q3 = r1 - r2
     
-    vector <double> p1 {}; // p1 = m1/M2 k2 - m1/M3 k3
-    vector <double> p2 {}; // p2 = m2/M3 k3 - m2/M1 k1
-    vector <double> p3 {}; // p3 = m3/M1 k1 - m3/M2 k2
-    
-    
     for (int i = 0; i < 2 ; i++)
     {
         q1.push_back(V2[i] - V3[i]);
         q2.push_back(V3[i] - V1[i]);
         q3.push_back(V1[i] - V2[i]);
     }
+        
+    q = {q1[0],q1[1],q2[0],q2[1],q3[0],q3[1]}; 
+}
+
+void Three_body::set_Initial_K(vector<double> IK)
+{
+    /*
+    The input is a 12-vecttor object with the initial positions and velocities of the system.
+    Instance must be as follows: {kx1,ky1,kx2,ky2,kx3,ky3}
+    */
     
-    for (int i = 2; i < 4 ; i++)
+    vector<double> V1(&IK[0],&IK[2]);   // {kx1,ky1}
+    vector<double> V2(&IK[2],&IK[4]);   // {kx2,ky2}
+    vector<double> V3(&IK[4],&IK[6]);   // {kx3,ky3}
+    
+    // Filling the relative coordinate system vectors
+    
+    vector <double> p1 {}; // p1 = m1/M2 k2 - m1/M3 k3
+    vector <double> p2 {}; // p2 = m2/M3 k3 - m2/M1 k1
+    vector <double> p3 {}; // p3 = m3/M1 k1 - m3/M2 k2
+    
+    for (int i = 0; i < 2 ; i++)
     {
         p1.push_back(m[1] * (V2[i]/M[2] - V3[i]/M[3]));
         p2.push_back(m[2] * (V3[i]/M[3] - V1[i]/M[1]));
         p3.push_back(m[3] * (V1[i]/M[1] - V2[i]/M[2]));
     }
     
-    q = {q1[0],q1[1],q2[0],q2[1],q3[0],q3[1]}; 
     p = {p1[0],p1[1],p2[0],p2[1],p3[0],p3[1]};
+}
 
+
+vector<double> Three_body::get_forces()
+{
+    double fx1 = -G*M[0]*( m[3]/pow(q[4],2) + m[2]/pow(q[2],2));
+    double fy1 = -G*M[0]*( m[3]/pow(q[5],2) + m[2]/pow(q[3],2));
+    
+    double fx2 = -G*M[0]*( m[1]/pow(q[0],2) + m[3]/pow(q[4],2));
+    double fy2 = -G*M[0]*( m[1]/pow(q[1],2) + m[3]/pow(q[5],2));
+    
+    double fx3 = -G*M[0]*( m[1]/pow(q[0],2) + m[2]/pow(q[2],2));
+    double fy3 = -G*M[0]*( m[1]/pow(q[1],2) + m[2]/pow(q[3],2));
+    
+    return {fx1,fy1,fx2,fy2,fx3,fy3};
 }
 
 //~~~~~~~~~~ State functions ~~~~~~~~~~//
