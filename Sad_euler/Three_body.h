@@ -55,6 +55,6 @@ private:
     // Tools
     
     bool check_radii(vector <double>);  // Checking if no collisions have happened
-    void write_on_file(ofstream (*));   // Writing in file: {x1,y1,x2,y2,x3,y3,t} 
+    void write_on_file(ofstream (*));   // Writing in file: {x1,y1,x2,y2,x3,y3,kx1,ky1,kx2,ky2,kx3,ky3,t} 
 };
     
