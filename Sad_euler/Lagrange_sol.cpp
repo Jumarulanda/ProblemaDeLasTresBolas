@@ -47,7 +47,7 @@ int main()
     
     ofstream file ("prueba1.txt"); // File for storing solutions
     
-    TB.evol_system(10000,0.1,&file,'v'); // Numer of steps, step size
+    TB.evol_system(10000,0.1,&file,'r'); // Numer of steps, step size
     
     
     return 0;
