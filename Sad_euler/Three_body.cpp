@@ -17,7 +17,7 @@ void Three_body::set_Masses(vector<double> Masses)
     
     //3+1-vector objet m
     
-    m = {0,0,0,0};
+    m = {1,0,0,0};
     
     m[1] = M[2]*M[3]/M[0];  
     m[2] = M[1]*M[3]/M[0];
@@ -36,7 +36,7 @@ void Three_body::set_Radii(vector<double> Radii)
 void Three_body::set_Initial_R(vector<double> IR)
 {
     /*
-    The input is a 12-vecttor object with the initial positions and velocities of the system.
+    The input is a 6-vector object with the initial positions and velocities of the system.
     Instance must be as follows: {x1,y1,x2,y2,x3,y3}
     */
     
@@ -49,7 +49,7 @@ void Three_body::set_Initial_R(vector<double> IR)
     double x_CM = (M[1]*V1[0] + M[2]*V2[0] + M[3]*V3[0])/M[0];
     double y_CM = (M[1]*V1[1] + M[2]*V2[1] + M[3]*V3[1])/M[0];
     
-    CM = {x_CM , y_CM};
+    R_CM = {x_CM , y_CM};
     
     // Filling the relative coordinate system vectors
     
@@ -70,13 +70,20 @@ void Three_body::set_Initial_R(vector<double> IR)
 void Three_body::set_Initial_K(vector<double> IK)
 {
     /*
-    The input is a 12-vecttor object with the initial positions and velocities of the system.
+    The input is a 6-vector object with the initial positions and velocities of the system.
     Instance must be as follows: {kx1,ky1,kx2,ky2,kx3,ky3}
     */
     
-    vector<double> V1(&IK[0],&IK[2]);   // {kx1,ky1}
-    vector<double> V2(&IK[2],&IK[4]);   // {kx2,ky2}
-    vector<double> V3(&IK[4],&IK[6]);   // {kx3,ky3}
+    vector<double> P1(&IK[0],&IK[2]);   // {kx1,ky1}
+    vector<double> P2(&IK[2],&IK[4]);   // {kx2,ky2}
+    vector<double> P3(&IK[4],&IK[6]);   // {kx3,ky3}
+    
+    // Determing center of mass momentum
+    
+    double kx_CM = (P1[0] + P2[0] + P3[0])/3;
+    double ky_CM = (P1[1] + P2[1] + P3[1])/3;
+    
+    K_CM = {kx_CM , ky_CM};
     
     // Filling the relative coordinate system vectors
     
@@ -86,12 +93,13 @@ void Three_body::set_Initial_K(vector<double> IK)
     
     for (int i = 0; i < 2 ; i++)
     {
-        p1.push_back(m[1] * (V2[i]/M[2] - V3[i]/M[3]));
-        p2.push_back(m[2] * (V3[i]/M[3] - V1[i]/M[1]));
-        p3.push_back(m[3] * (V1[i]/M[1] - V2[i]/M[2]));
+        p1.push_back(m[1] * (P2[i]/M[2] - P3[i]/M[3]));
+        p2.push_back(m[2] * (P3[i]/M[3] - P1[i]/M[1]));
+        p3.push_back(m[3] * (P1[i]/M[1] - P2[i]/M[2]));
     }
     
     p = {p1[0],p1[1],p2[0],p2[1],p3[0],p3[1]};
+    
 }
 
 
@@ -157,7 +165,7 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
     // Writing file header
     if (file -> is_open())
     {
-	  *file << M[1] << "," << M[2] << "," << M[3] << "," << R[1] << "," << R[2] << "," << R[3] << "," << CM[0] << "," << CM[1] << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "\n";
+	  *file << M[1] << "," << M[2] << "," << M[3] << "," << R[1] << "," << R[2] << "," << R[3] << "," << R_CM[0] << "," << R_CM[1] << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "," << 0 << "\n";
     }
     
 
@@ -325,23 +333,26 @@ void Three_body::write_on_file(ofstream *file)
                           q3 =  1*r1 - 1*r2 + 0*r3
     */
         
-    double x1 = (-M[3]*q[2] + M[2]*q[4])/M[0] + CM[0];
-    double y1 = (-M[3]*q[3] + M[2]*q[5])/M[0] + CM[1];
+    double x1 = (-M[3]*q[2] + M[2]*q[4])/M[0] + R_CM[0] + K_CM[0]*time;
+    double y1 = (-M[3]*q[3] + M[2]*q[5])/M[0] + R_CM[1] + K_CM[1]*time;
     
-    double kx1 = - p[2] + p[4];
-    double ky1 = - p[3] + p[5];
+    
+    double kx1 = - p[2] + p[4] + K_CM[0];
+    double ky1 = - p[3] + p[5] + K_CM[1];
             
-    double x2 = (-M[3]*q[2] - (M[1] + M[3])*q[4])/M[0] + CM[0];
-    double y2 = (-M[3]*q[3] - (M[1] + M[3])*q[5])/M[0] + CM[1];
+    double x2 = (-M[3]*q[2] - (M[1] + M[3])*q[4])/M[0] + R_CM[0] + K_CM[0]*time;
+    double y2 = (-M[3]*q[3] - (M[1] + M[3])*q[5])/M[0] + R_CM[1] + K_CM[1]*time;
     
-    double kx2 = m[1]/m[2] * p[2] - (1 + m[1]/m[3]) * p[4];
-    double ky2 = m[1]/m[2] * p[3] - (1 + m[1]/m[3]) * p[5];
     
-    double x3 = ((M[1] + M[2])*q[2] + M[2]*q[4])/M[0] + CM[0];
-    double y3 = ((M[1] + M[2])*q[3] + M[2]*q[5])/M[0] + CM[1];
+    double kx2 = -m[1]/m[2] * p[2] - (1 + m[1]/m[3]) * p[4] + K_CM[0];
+    double ky2 = -m[1]/m[2] * p[3] - (1 + m[1]/m[3]) * p[5] + K_CM[1];
     
-    double kx3 = (1 + m[1]/m[2])*p[2] + m[1]/m[3] * p[4];
-    double ky3 = (1 + m[1]/m[2])*p[3] + m[1]/m[3] * p[5];
+    double x3 = ((M[1] + M[2])*q[2] + M[2]*q[4])/M[0] + R_CM[0] + K_CM[0]*time;
+    double y3 = ((M[1] + M[2])*q[3] + M[2]*q[5])/M[0] + R_CM[1] + K_CM[1]*time;
+    
+    double kx3 = (1 + m[1]/m[2])*p[2] + m[1]/m[3] * p[4] + K_CM[0];
+    double ky3 = (1 + m[1]/m[2])*p[3] + m[1]/m[3] * p[5] + K_CM[1];
+    
     
     if (file -> is_open())
     {
