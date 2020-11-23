@@ -14,27 +14,43 @@ args = parser.parse_args()
 
 read_data = np.genfromtxt(args.diff_sol, delimiter=",")
 
-R1 = read_data[0,3]
-R2 = read_data[0,4]
-R3 = read_data[0,5]
+## Masses and radii
+
+M1 = read_data[0,0] ; R1 = read_data[0,3]
+M2 = read_data[0,1] ; R2 = read_data[0,4]
+M3 = read_data[0,2] ; R3 = read_data[0,5]
+
+x_cm = read_data[0,6] ; y_cm = read_data[0,7]
+
+## X,Y Positions
 
 X1 = read_data[1:,0] ; Y1 = read_data[1:,1]
 X2 = read_data[1:,2] ; Y2 = read_data[1:,3]
 X3 = read_data[1:,4] ; Y3 = read_data[1:,5]
 
+## X,Y Momenta
+
 KX1 = read_data[1:,6] ; KY1 = read_data[1:,7]
 KX2 = read_data[1:,8] ; KY2 = read_data[1:,9]
 KX3 = read_data[1:,10] ; KY3 = read_data[1:,11]
 
-t = read_data[:,12]
+# Time
 
-#plt.scatter( [ X1[0],X2[0],X3[0] ] , [Y1[0],Y2[0],Y3[0]] , color = "k")
+t = read_data[:,12]
 
 # Preview plot
 
-plt.plot(X1,Y1)
-plt.plot(X2,Y2)
-plt.plot(X3,Y3)
+plt.scatter([X1[0],X2[0],X3[0]],[Y1[0],Y2[0],Y3[0]], marker = "x", s = 10, color = ["#FF5733","#C44C33","#873828"], label = "Starting points")
+
+plt.plot(X1,Y1,"--", alpha = 0.6, lw = 1.2, color = "#FF5733", label = "$m_1 = {} \odot$".format(M1))
+plt.plot(X2,Y2,"--", alpha = 0.6, lw = 1.2, color = "#C44C33", label = "$m_2 = {} \odot$".format(M2))
+plt.plot(X3,Y3,"--", alpha = 0.6, lw = 1.2, color = "#873828", label = "$m_3 = {} \odot$".format(M3))
+
+plt.title("Animation preview", fontsize = 13)
+plt.xlabel("X [AU]", fontsize = 10)
+plt.ylabel("Y [AU]", fontsize = 10)
+
+plt.legend()
 plt.show()
 
 if input("Desea guardar la animacion? (y/n): ") == "y":
@@ -78,20 +94,25 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
     
     ax1.get_xaxis().set_ticks([])
     ax1.get_yaxis().set_ticks([])
-    
+
     M = ax1.transData.get_matrix()
 
     # Animating
 
-    line1, = ax1.plot([], [], lw = 1.2, color = "gray", alpha = 0.2)
-    line2, = ax1.plot([], [], lw = 1.2, color = "gray", alpha = 0.2)
-    line3, = ax1.plot([], [], lw = 1.2, color = "gray", alpha = 0.2)
+    line1, = ax1.plot([], [], lw = 1.2, color = "#FF5733", alpha = 0.2)
+    line2, = ax1.plot([], [], lw = 1.2, color = "#C44C33", alpha = 0.2)
+    line3, = ax1.plot([], [], lw = 1.2, color = "#873828", alpha = 0.2)
 
-    pts1, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R1, color= "k")
-    pts2, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R2, color= "k")
-    pts3, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R3, color= "k")
+    pts1, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R1, color= "#FF5733", label = "$m_1 = {} \odot$".format(M1))
+    pts2, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R2, color= "#C44C33", label = "$m_2 = {} \odot$".format(M2))
+    pts3, = ax1.plot([], [], "o" , ls= " ", ms = 1.33*M[0][0]*R3, color= "#873828", label = "$m_3 = {} \odot$".format(M3))
     
-    info = ax1.text(0.02,0.92," ",transform = ax1.transAxes,fontsize = 10)
+    info = ax1.text(0.02,0.95," ",transform = ax1.transAxes,fontsize = 8)
+    ax1.set_title("Three body problem animation", fontsize = 10)
+    
+    legend = ax1.legend(loc = "upper right", fontsize = 8)
+    for i in [0,1,2] : legend.legendHandles[i]._legmarker.set_markersize(6)
+
     
     def init():
     
@@ -111,7 +132,7 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
         line3.set_data(X3[:i],Y3[:i])
         pts3.set_data(X3[i], Y3[i])
         
-        info.set_text("Years: {}".format(t[i]))
+        info.set_text("{} years".format(t[i]))
     
         return line1,line2,line3,pts1,pts2,pts3,info
     
@@ -125,7 +146,7 @@ if input("Desea guardar la animacion? (y/n): ") == "y":
     ## Change fps if want a more speeded animation
     # writer = Writer(fps=90, metadata=dict(artist='Me'), bitrate=1800)
     # ani.save('ani.mp4',writer = writer)
-    ani.save('ani.gif', writer='imagemagick', fps=30)
+    ani.save('ani.gif', writer='imagemagick', fps=120)
 
 else: 
     pass
