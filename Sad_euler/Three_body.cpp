@@ -143,13 +143,15 @@ void Three_body::evol_system(double number_of_steps, double time_step, ofstream 
    
 	   	switch (opt) {	
       		case 'v': 
-				Updated_State = vel_verlet(time_step, State);
-				break;
-			case 'e':
-				Updated_State = euler_integrator(time_step, State);
-				break;
-			default:
-				Updated_State = euler_integrator(time_step, State);
+		  Updated_State = vel_verlet(time_step, State);
+		  break;
+		case 'e':
+		  Updated_State = euler_integrator(time_step, State);
+		  break;
+		case 'r':
+		   Updated_State = RK4(time_step, State);
+		default:
+		  Updated_State = euler_integrator(time_step, State);
         }  
         // Updating generalized coordinate member variables
         
@@ -192,19 +194,77 @@ vector<vector<double>> Three_body::vel_verlet(double time_step, vector<vector<do
     vector<double> updated_Q {};
     vector<double> updated_P {};
     
-	vector<double> P_nHalf;
+    vector<double> P_nHalf;
 
     for (int i = 0; i < Q.size(); i++) {
-		P_nHalf.push_back(P[i] + h*f(q)[i]*0.5);
-		updated_Q.push_back(Q[i] + h*P_nHalf[i]/m[int(i/2. + 1)]);
+      P_nHalf.push_back(P[i] + h*f(q)[i]*0.5);
+      updated_Q.push_back(Q[i] + h*P_nHalf[i]/m[int(i/2. + 1)]);
     }
 
-	for (int i=0; i < Q.size(); i++) {
-		updated_P.push_back(P_nHalf[i] + h*0.5*f(Q)[i]);
-	}
+    for (int i=0; i < Q.size(); i++) {
+      updated_P.push_back(P_nHalf[i] + h*0.5*f(Q)[i]);
+    }
     
     return {updated_Q , updated_P};
-}   
+}
+vector<vector<double>> Three_body:: RK4 (double h, vector<vector<double>> State)
+{
+  
+  //Definitions of constants that define the symplectic method
+  double c1 = 1./(2.*(2.-pow(2.,1./3.)));
+  double c2 = (1.-pow(2.,1./3.))/(2*(2.-pow(2.,1./3.)));
+  double c3 = c2;
+  double c4 = c1;
+  vector <double> c {c1,c2,c3,c4}; 
+
+  double d1  = 1./(2.-pow(2.,1./3.));
+  double d2  = -pow(2.,1./3.)/(2.-pow(2.,1./3.));
+  double d3 = d1;
+  double d4 = 0;
+  vector <double> d {d1,d2,d3,d4};
+  vector <double> vector_state_q = State[0];
+  vector <double> vector_state_p = State[1];
+  for (int i = 0; i<4;i++)
+    {
+      vector_state_q =  v_q(h,c[i], vector_state_q,vector_state_p);
+      vector_state_p = v_p(h,d[i], vector_state_p);	      
+    }
+
+
+  return { vector_state_q,  vector_state_p};
+}
+
+
+//update states of q for one order 
+vector <double> Three_body :: v_q(double h, double c,vector <double> vector_state_q,vector <double> vector_state_p)
+{
+  int l = vector_state_q.size();
+  vector <double> q1_vec;
+  for (int i=0; i<l;i++)
+    {
+    double q1 = vector_state_q[i] + c*h*(vector_state_p[i]/m[int(i/2. + 1)]);
+    q1_vec.push_back(q1);
+    }
+  return q1_vec;
+}
+
+//update states of p for one order
+vector <double> Three_body :: v_p(double h, double d,vector <double> vector_state_p)
+{
+  int l = vector_state_p.size();
+  //cout << l <<endl;
+  vector <double> p_vec;
+  for (int i=0; i<l;i++)
+    {
+      double p1 = vector_state_p[i] + d*h*f(q)[i];
+      p_vec.push_back(p1);
+    }
+  return  p_vec; 
+}
+
+  
+
+
                                                     
 //~~~~~~~~~~~ Tools ~~~~~~~~~~//
     
