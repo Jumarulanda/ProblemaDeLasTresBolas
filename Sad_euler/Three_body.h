@@ -23,7 +23,7 @@ public:
     // System evolution
     void evol_system(double, double, ofstream (*),char);
 
-private:
+//private:
 
     // Instance parameters
     
@@ -35,7 +35,9 @@ private:
     vector<double> M;   // {M_t,M1,M2,M3}
     vector<double> m;   // Relative masses
     vector<double> R;   // {R1,R2,R3}
-    vector<double> CM;  // {x_CM , y_CM}
+    
+    vector<double> R_CM;  // {x_CM , y_CM}
+    vector<double> K_CM;  // {kx_CM, ky_CM}
     
     // Generalized coordinate system
     
