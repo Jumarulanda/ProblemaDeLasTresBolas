@@ -23,13 +23,13 @@ int main()
 
     // System parameters
     
-    vector <double> M = {1,1,1};  // Masses
+    vector <double> M = {2,2,2};  // Masses
     vector <double> R = {1,1,1};  // Radii
     
     // Initial conditions 
     
-    vector <double> IR = {-10,0,0,0,10,0};
-    vector <double> IK = {0,1,2,3,4,5}; 
+    vector <double> IR = {x1,y1,x2,y2,x3,y3};
+    vector <double> IK = {0,1.25,-1.25,-1.25,1.3,-1.3}; 
     
     // Instance the Three_body object
     
@@ -41,8 +41,11 @@ int main()
     TB.set_Initial_R(IR);
     TB.set_Initial_K(IK);
             
-    ofstream file ("prueba1.txt");      // File for storing solutions
-    TB.evol_system(500,0.1,&file,'r');  // Numer of steps, step size
+    //ofstream file ("prueba1.txt");// File for storing solutions
+    //ofstream file ("Lines_rk4.txt");
+    //ofstream file ("Lines_euler.txt");
+    ofstream file ("Lines_le.txt");
+    TB.evol_system(10000,0.1,&file,'v');  // Numer of steps, step size
     
     
     return 0;
