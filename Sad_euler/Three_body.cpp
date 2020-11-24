@@ -103,20 +103,6 @@ void Three_body::set_Initial_K(vector<double> IK)
 }
 
 
-vector<double> Three_body::get_forces()
-{
-    double fx1 = -G*M[0]*( m[3]/pow(q[4],2) + m[2]/pow(q[2],2));
-    double fy1 = -G*M[0]*( m[3]/pow(q[5],2) + m[2]/pow(q[3],2));
-    
-    double fx2 = -G*M[0]*( m[1]/pow(q[0],2) + m[3]/pow(q[4],2));
-    double fy2 = -G*M[0]*( m[1]/pow(q[1],2) + m[3]/pow(q[5],2));
-    
-    double fx3 = -G*M[0]*( m[1]/pow(q[0],2) + m[2]/pow(q[2],2));
-    double fy3 = -G*M[0]*( m[1]/pow(q[1],2) + m[2]/pow(q[3],2));
-    
-    return {fx1,fy1,fx2,fy2,fx3,fy3};
-}
-
 //~~~~~~~~~~ State functions ~~~~~~~~~~//
 
 
@@ -333,25 +319,25 @@ void Three_body::write_on_file(ofstream *file)
                           q3 =  1*r1 - 1*r2 + 0*r3
     */
         
-    double x1 = (-M[3]*q[2] + M[2]*q[4])/M[0] + R_CM[0] + K_CM[0]*time;
-    double y1 = (-M[3]*q[3] + M[2]*q[5])/M[0] + R_CM[1] + K_CM[1]*time;
+    double x1 = (-M[3]*q[2] + M[2]*q[4])/M[0] + R_CM[0] ;//+ K_CM[0]*time/M[1];
+    double y1 = (-M[3]*q[3] + M[2]*q[5])/M[0] + R_CM[1] ;//+ K_CM[1]*time/M[1];
     
     
-    double kx1 = - p[2] + p[4] + K_CM[0];
-    double ky1 = - p[3] + p[5] + K_CM[1];
+    double kx1 = - p[2] + p[4] ;// + K_CM[0];
+    double ky1 = - p[3] + p[5] ;// + K_CM[1];
             
-    double x2 = (-M[3]*q[2] - (M[1] + M[3])*q[4])/M[0] + R_CM[0] + K_CM[0]*time;
-    double y2 = (-M[3]*q[3] - (M[1] + M[3])*q[5])/M[0] + R_CM[1] + K_CM[1]*time;
+    double x2 = (-M[3]*q[2] - (M[1] + M[3])*q[4])/M[0] + R_CM[0] ;//+ K_CM[0]*time/M[2];
+    double y2 = (-M[3]*q[3] - (M[1] + M[3])*q[5])/M[0] + R_CM[1] ;//+ K_CM[1]*time/M[2];
     
     
-    double kx2 = -m[1]/m[2] * p[2] - (1 + m[1]/m[3]) * p[4] + K_CM[0];
-    double ky2 = -m[1]/m[2] * p[3] - (1 + m[1]/m[3]) * p[5] + K_CM[1];
+    double kx2 = -m[1]/m[2] * p[2] - (1 + m[1]/m[3]) * p[4] ;//+ K_CM[0];
+    double ky2 = -m[1]/m[2] * p[3] - (1 + m[1]/m[3]) * p[5] ;//+ K_CM[1];
     
-    double x3 = ((M[1] + M[2])*q[2] + M[2]*q[4])/M[0] + R_CM[0] + K_CM[0]*time;
-    double y3 = ((M[1] + M[2])*q[3] + M[2]*q[5])/M[0] + R_CM[1] + K_CM[1]*time;
+    double x3 = ((M[1] + M[2])*q[2] + M[2]*q[4])/M[0] + R_CM[0] ;// + K_CM[0]*time/M[3];
+    double y3 = ((M[1] + M[2])*q[3] + M[2]*q[5])/M[0] + R_CM[1] ;// + K_CM[1]*time/M[3];
     
-    double kx3 = (1 + m[1]/m[2])*p[2] + m[1]/m[3] * p[4] + K_CM[0];
-    double ky3 = (1 + m[1]/m[2])*p[3] + m[1]/m[3] * p[5] + K_CM[1];
+    double kx3 = (1 + m[1]/m[2])*p[2] + m[1]/m[3] * p[4] ;//+ K_CM[0];
+    double ky3 = (1 + m[1]/m[2])*p[3] + m[1]/m[3] * p[5] ;//+ K_CM[1];
     
     
     if (file -> is_open())
